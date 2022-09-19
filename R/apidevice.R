@@ -3,6 +3,7 @@ library(httr)
 library(methods)
 library(zoo)
 library("xts")
+library("lubridate")
 
 #' Title
 #'
@@ -74,12 +75,16 @@ ScDevice <- setRefClass(
 
              for (sensor_id in rownames(names)) {
                ts <- get_sensor_data(sensor_id, rollup, min_date, max_date)
-               ts <- setNames(ts, names[sensor_id, "metric"])
-
-               if (is.null(data)) {
-                 data <<- ts
+               if (is.null(ts)) {
+                 print (sprintf('Data for %s (%s) received is empty', sensor_id, names[sensor_id, "metric"]))
+                 data <<- merge(data, matrix(NA, ncol=1, nrow=nrow(data), dimnames=list(NULL, names[sensor_id, "metric"])))
                } else {
-                 data <<- merge(data, ts, all=TRUE)
+                ts <- setNames(ts, names[sensor_id, "metric"])
+                if (is.null(data)) {
+                  data <<- ts
+                } else {
+                  data <<- merge(data, ts, all=TRUE)
+                }
                }
              }
            },
@@ -108,10 +113,14 @@ ScDevice <- setRefClass(
 
              raw <- rawToChar(response$content)
              jsonTS <- fromJSON(raw)
-             df <- as.data.frame(jsonTS)
-
-             my_ts <- xts(as.numeric(df$readings.2), as.POSIXct(df$readings.1, format="%Y-%m-%dT%H:%M:%SZ", tz="UTC"))
-             my_ts
+             if (jsonTS$sample_size > 0) {
+               df <- as.data.frame(jsonTS)
+               my_ts <- xts(as.numeric(df$readings.2), round(as.POSIXct(df$readings.1, format="%Y-%m-%dT%H:%M:%SZ", tz="UTC"), "mins"))
+               my_ts
+             } else {
+               my_ts <- NULL
+               my_ts
+             }
            }
          )
 )
