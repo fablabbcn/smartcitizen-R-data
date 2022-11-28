@@ -1,14 +1,13 @@
 Package: smartcitizenRdata
 Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
+Title: Get Data From SC Api
+Version: 0.1.2
 Author: Óscar González
 Maintainer: Óscar González <oscar@smartcitizen.me>
 Description: Get data for devices in the Smart Citizen API.
 License: GPL (>= 3)
 Encoding: UTF-8
-LazyData: true
-Imports:
+Depends:
     jsonlite,
     httr,
     methods,
