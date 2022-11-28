@@ -9,7 +9,7 @@ library(devtools)
 install_github("fablabbcn/smartcitizen-R-data")
 ```
 
-And work as in the [example](example.R) file:
+And work as in the [example](example.R) file, or the [example notebook](notebook_example.ipynb) file (see below for installing kernel in jupyter):
 
 ```
 # source("R/apidevice.R")
@@ -34,3 +34,14 @@ d$get_device_data()
 # Tabular data
 data <- d$data
 ```
+
+## Installing in jupyter
+
+Assuming you have R installed, you could run this in the terminal:
+
+```
+Rscript -e 'install.packages(c("repr", "IRdisplay", "IRkernel"), type = "source", repos="https://cran.rstudio.com");'
+Rscript -e 'IRkernel::installspec()'
+```
+
+And run `jupyter`. A example notebook is also provided.
